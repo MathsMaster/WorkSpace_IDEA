@@ -1,10 +1,11 @@
-package com.mine.demo;
+package com.mine.demo2;
 
 /**
  * created by xulp
  * on 2021/7/29
  */
 public class Demo {
+
     public static void main(String[] args) {
         Ticket t = new Ticket();
         Thread t1 = new Thread(t);
@@ -18,4 +19,5 @@ public class Demo {
         t.flag = false;
         t2.start();
     }
+
 }
