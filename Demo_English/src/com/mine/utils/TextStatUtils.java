@@ -31,6 +31,7 @@ public class TextStatUtils {
         // 读取数据
         init();
         readAllStandardWord();// 读取出5500个单词
+        testSize();//测试不重复的单词数量
         readWordByTestPaper(fileName_1);// 读取试卷中的单词
         readWordByTestPaper(fileName_2);// 读取试卷中的单词
         readWordByTestPaper(fileName_3);// 读取试卷中的单词
@@ -49,6 +50,17 @@ public class TextStatUtils {
         // 输出结果
         outPutResult();
     }
+
+    static void testSize()
+    {
+        HashMap<String, Integer> map = new HashMap<>();
+        for(String word : allWordList)
+        {
+            map.put(word.trim(),0);
+        }
+        System.out.println("5500个单词不重复的数量是 : "+map.keySet().size());
+    }
+
 
     static void outPutResult() {
         IOUtils.outPutData("/Users/xulp/Documents/学习资料/考研英语/考研英语真题/统计后匹配上的部分.txt", resultMap);
@@ -281,7 +293,7 @@ public class TextStatUtils {
                     strArray = info.split(" ");// 拆分后的样式: 5376 whistle n.口哨,汽笛;口哨声,汽笛声 v.吹口哨;鸣笛
                     // 将单词分离出来
                     if (strArray != null && strArray.length > 1) {
-                        allWordList.add(strArray[1]);
+                        allWordList.add(strArray[1].trim());
                     }
                 }
             }

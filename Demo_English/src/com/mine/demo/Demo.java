@@ -59,14 +59,14 @@ public class Demo {
 
         System.out.println("统计最近20年的真题");
         run(inputFile_1_1, inputFile_2_1, inputFile_3_1, outPutFile_01_1, outPutFile_01_2, outPutFile_01_3);
-        System.out.println("统计最近20年真题的阅读和翻译部分");
-        run(inputFile_1_2, inputFile_2_2, inputFile_3_2, outPutFile_02_1, outPutFile_02_2, outPutFile_02_3);
-        System.out.println("统计最近20年真题的阅读和翻译的题目");
-        run(inputFile_1_3, inputFile_2_3, inputFile_3_3, outPutFile_03_1, outPutFile_03_2, outPutFile_03_3);
-        System.out.println("统计最近20年真题的阅读题目");
-        run(inputFile_1_4, inputFile_2_4, inputFile_3_4, outPutFile_04_1, outPutFile_04_2, outPutFile_04_3);
-        System.out.println("统计最近20年真题的阅读部分");
-        run(inputFile_1_5, inputFile_2_5, inputFile_3_5, outPutFile_05_1, outPutFile_05_2, outPutFile_05_3);
+//        System.out.println("统计最近20年真题的阅读和翻译部分");
+//        run(inputFile_1_2, inputFile_2_2, inputFile_3_2, outPutFile_02_1, outPutFile_02_2, outPutFile_02_3);
+//        System.out.println("统计最近20年真题的阅读和翻译的题目");
+//        run(inputFile_1_3, inputFile_2_3, inputFile_3_3, outPutFile_03_1, outPutFile_03_2, outPutFile_03_3);
+//        System.out.println("统计最近20年真题的阅读题目");
+//        run(inputFile_1_4, inputFile_2_4, inputFile_3_4, outPutFile_04_1, outPutFile_04_2, outPutFile_04_3);
+//        System.out.println("统计最近20年真题的阅读部分");
+//        run(inputFile_1_5, inputFile_2_5, inputFile_3_5, outPutFile_05_1, outPutFile_05_2, outPutFile_05_3);
     }
 
 
@@ -220,6 +220,11 @@ public class Demo {
         }
     }
 
+    /*
+        最为关键的匹配算法
+        standardWord 传进来的5500个的标准单词之一
+        matchedWord 待匹配的单词
+     */
     static boolean compareWord(String standardWord, String matchedWord) throws NullPointerException {
         if (TextUtils.isEmpty(standardWord) || TextUtils.isEmpty(matchedWord))
             return false;
@@ -230,7 +235,7 @@ public class Demo {
 
         if (standardWord.equals(matchedWord))// 进行严格的匹配
             return true;
-
+        //第一版匹配的样式
         // ing,ed,ily,s,es, im,un
         // 如果严格的匹配不成功的话，再进行精细的匹配
         if (matchedWord.endsWith("ing") || matchedWord.endsWith("ily") || matchedWord.endsWith("ed")
@@ -253,6 +258,43 @@ public class Demo {
             if (standardWord.contains(matchedWord))// 进行匹配
                 return true;
         }
+
+        //第二版增加的匹配样式s' , ;  ’ ’s : ” , 这第二版本对第一版本几乎没有效率的提升
+//        if (matchedWord.endsWith("s'") || matchedWord.endsWith("’s")) {
+//            matchedWord = matchedWord.substring(0, matchedWord.length() - 2);
+//        } else if (matchedWord.endsWith(",") || matchedWord.endsWith(";")
+//                || matchedWord.endsWith("’") || matchedWord.endsWith(":") || matchedWord.endsWith("”")) {
+//            matchedWord = matchedWord.substring(0, matchedWord.length() - 1);
+//        }
+//        //tions
+//        // nary , sure , tive , tion , ment,sion,ness , ance
+//        // ary
+//        // cy , ly , al
+//        if (matchedWord.endsWith("tions") || matchedWord.endsWith("nary") || matchedWord.endsWith("sure")
+//                || matchedWord.endsWith("tive") || matchedWord.endsWith("tion") || matchedWord.startsWith("ment")
+//                || matchedWord.startsWith("sion") || matchedWord.startsWith("ness") || matchedWord.startsWith("ance")
+//                || matchedWord.startsWith("ary") || matchedWord.startsWith("cy") || matchedWord.startsWith("ly")
+//                || matchedWord.startsWith("al")) {
+//
+//            if (matchedWord.endsWith("tions")) {
+//                if (matchedWord.length() <= 6)
+//                    return false;
+//                matchedWord = matchedWord.substring(0, matchedWord.length() - 6);
+//            } else if (matchedWord.endsWith("nary") || matchedWord.endsWith("sure") || matchedWord.endsWith("tive") || matchedWord.endsWith("tion")
+//                    || matchedWord.endsWith("ment") || matchedWord.endsWith("sion") || matchedWord.endsWith("ness") || matchedWord.endsWith("ance")) {
+//                if (matchedWord.length() <= 5)
+//                    return false;
+//                matchedWord = matchedWord.substring(0, matchedWord.length() - 5);
+//            } else if (matchedWord.endsWith("ary")) {
+//                if (matchedWord.length() <= 4)
+//                    return false;
+//                matchedWord = matchedWord.substring(0, matchedWord.length() - 4);
+//            } else if (matchedWord.endsWith("cy") || matchedWord.endsWith("ly") || matchedWord.endsWith("al")) {
+//                matchedWord = matchedWord.substring(0, matchedWord.length() - 2);
+//            }
+//            if (standardWord.contains(matchedWord))// 进行匹配
+//                return true;
+//        }
 
         return false;
     }
