@@ -3,6 +3,7 @@ package com.mine.utils;
 import com.mine.bean.WordObj;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,8 +13,8 @@ import java.util.List;
  * 实现思路：
  * 1，准备两个数组，WordArray长度6000，存放的是WordObj对象，该对象包含了单词，以及一个集合对象list<Integer>;
  * 2，使用IO流把所有单词全都读出来，同时把后面的单词意思也都读出来；
- * 1>使用一个一维数组WordArray来把所有的单词放进去，这里放进去的是个对象，包含了单词以及一个集合对象list<Integer>(用来标记有多少单词和当前词组存在相关性)
- * 2>再使用一个二维数组MeansArray，把所有单词的意思都拆开，同时放在一个二维数组里面，因为一个单词最多也就5，6个意思，所以，数组的长度只需要6就够了；对单词意思拆分后进行过滤后，放置在对应数组位置
+ *      1>使用一个一维数组WordArray来把所有的单词放进去，这里放进去的是个对象，包含了单词以及一个集合对象list<Integer>(用来标记有多少单词和当前词组存在相关性)
+ *      2>再使用一个二维数组MeansArray，把所有单词的意思都拆开，同时放在一个二维数组里面，因为一个单词最多也就5，6个意思，所以，数组的长度只需要6就够了；对单词意思拆分后进行过滤后，放置在对应数组位置
  * 3，使用二维数组MeansArray的第一个子数组的第一个意思，与其他所有单词的意思进行匹配，匹配上的就在WordArray中的对应的第一个list中进行标记；再使用二维数组MeansArray的第一个字数组的第二个意思，与其他所有单词的意思进行匹配，能匹配上的就继续在WordArray中的第一个list进行标记。。。。。
  * 4，如果第一个数组匹配完，则使用第二个数组,重复上述步骤。。。。。。
  * 5，当5500个数组都完成了上述步骤后，必定会出现，其中某一个单词对象的list<Integer>，添加了很多被标记对象的索引
@@ -76,6 +77,8 @@ public class Utils {
     static void printAllWord(WordObj[] wordArray) {
         List<String> allStrList = readAllColum();// 先读取出所有的行来
 
+        List<String> alreadyPrintList = new ArrayList<String>();
+
         FileOutputStream fos = null;
         BufferedWriter bw = null;
         try {
@@ -89,18 +92,34 @@ public class Utils {
             }
             bw = new BufferedWriter(new FileWriter(fOut));
 
+            String tempStr = "";
             for (int i = 0; i < wordArray.length; i++) {
-                // 先打印自己这一行
+                //  先打印自己这一行
                 if (allStrList.size() > i)
-                    bw.write(allStrList.get(i) + "\n");
+                {
+                    tempStr = "";
+                    tempStr = allStrList.get(i);
+                    tempStr = cuttingStr(tempStr);
+                    if(alreadyPrintList.contains(tempStr))//表示已经打印过了，不需要再进行打印
+                        continue;
+                    alreadyPrintList.add(tempStr);
+                    bw.write( tempStr+ "\n");
+                }
                 bw.flush();
+
+                //  再打印关联行的意思
                 if (wordArray[i] != null && wordArray[i].getList() != null) {
                     List<Integer> list = wordArray[i].getList();
                     Integer index = 0;
                     for (int j = 0; j < list.size(); j++) {
                         index = list.get(j);
-                        if (allStrList.size() > index)
-                            bw.write(allStrList.get(index) + "\n");
+                        if (allStrList.size() > index)//得在这里加个判断才行,剔除掉之前以及打印过的数据才行
+                        {
+                            tempStr = allStrList.get(index);
+                            tempStr = cuttingStr(tempStr);
+                            alreadyPrintList.add(tempStr);
+                            bw.write(tempStr + "\n");
+                        }
                         bw.flush();
                     }
                     bw.write("\n");
@@ -121,6 +140,23 @@ public class Utils {
 
             }
         }
+    }
+
+
+    static String cuttingStr(String str){
+        if(str == null || str.equals(""))
+            return "";
+        String num = str.substring(0,str.indexOf(" "));
+        int i = 0;
+        try{
+            i = Integer.parseInt(num);
+        }catch (Exception e)
+        {
+
+        }
+        if(i != 0)//不等于0的话就切割
+            str  = str.substring(str.indexOf(" ")+1);
+        return str;
     }
 
     static void testOutPutFile(WordObj[] wordArray) {
@@ -233,6 +269,7 @@ public class Utils {
     static void init() {
         wordArray = new WordObj[WordMAXNum];
         meansArray = new LinkedList[WordMAXNum];
+
     }
 
     /*

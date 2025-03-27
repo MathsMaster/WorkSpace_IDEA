@@ -67,6 +67,14 @@ public class Demo {
 //        run(inputFile_1_4, inputFile_2_4, inputFile_3_4, outPutFile_04_1, outPutFile_04_2, outPutFile_04_3);
 //        System.out.println("统计最近20年真题的阅读部分");
 //        run(inputFile_1_5, inputFile_2_5, inputFile_3_5, outPutFile_05_1, outPutFile_05_2, outPutFile_05_3);
+//        System.out.println("统计最近10年英语一真题部分");
+//        run(inputFile_1_1, null, null, null, null, null);
+//        System.out.println("统计最近10年英语一,英语2的真题部分");
+//        run(inputFile_1_1, inputFile_2_1, null, null, null, null);
+//        System.out.println("统计最近10年英语一的阅读部分");
+//        run(inputFile_1_5, null, null, null, null, null);
+//        System.out.println("统计最近10年英语一,英语二的阅读部分");
+//        run(inputFile_1_5, inputFile_2_5, null, null, null, null);
     }
 
 
@@ -79,18 +87,25 @@ public class Demo {
         resultMap = new HashMap<>();
 
         readAllStandardWord(allWordList);// 读取出5500个单词
-        readWordByTestPaper(inputPath1, allPaperWordList);// 读取试卷中的单词
-        readWordByTestPaper(inputPath2, allPaperWordList);// 读取试卷中的单词
-        readWordByTestPaper(inputPath3, allPaperWordList);// 读取试卷中的单词
+        if (inputPath1 != null)
+            readWordByTestPaper(inputPath1, allPaperWordList);// 读取试卷中的单词
+        if (inputPath2 != null)
+            readWordByTestPaper(inputPath2, allPaperWordList);// 读取试卷中的单词
+        if (inputPath3 != null)
+            readWordByTestPaper(inputPath3, allPaperWordList);// 读取试卷中的单词
 
         System.out.println("标准单词数量 : " + allWordList.size());
         System.out.println("真题单词总量(未去重) : " + allPaperWordList.size());
-        statisWord(allPaperWordList, "", outPutPath3);
+        if (outPutPath3 != null)
+            statisWord(allPaperWordList, "", outPutPath3);
         // 操作数据进行匹配
         matchAllWord(allWordList, allPaperWordList, resultMap);// 进行
 
         // 输出结果
-        outPutResult(allPaperWordList, resultMap, outPutPath1, outPutPath2, outPutPath3);
+        System.out.println("匹配上的单词数量(去重后) : " + resultMap.keySet().size());
+        System.out.println("没有匹配上的单词数量(含重复) : " + allPaperWordList.size());
+        if (outPutPath1 != null && outPutPath2 != null)
+            outPutResult(allPaperWordList, resultMap, outPutPath1, outPutPath2);
         System.out.println();
     }
 
@@ -104,10 +119,8 @@ public class Demo {
         IOUtils.outPutData(outPutPath3, map);
     }
 
-    static void outPutResult(ArrayList<String> allPaperWordList, HashMap<String, Integer> resultMap, String outPutPath1, String outPutPath2, String outPutPath3) {
-        System.out.println("匹配上的单词数量(去重后) : " + resultMap.keySet().size());
+    static void outPutResult(ArrayList<String> allPaperWordList, HashMap<String, Integer> resultMap, String outPutPath1, String outPutPath2) {
         IOUtils.outPutData(outPutPath2, resultMap);
-        System.out.println("没有匹配上的单词数量(含重复) : " + allPaperWordList.size());
         IOUtils.outPutData(outPutPath1, allPaperWordList);
     }
 
